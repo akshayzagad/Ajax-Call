@@ -18,7 +18,7 @@ const renderCountry = function (data, className = "") {
   </div>
 </article>`
 
-  countriesContainer.insertAdjacentHTML("beforeend", html)
+  countriesContainer.insertAdjacentHTML("afterend", html)
 }
 
 // function getCountries(country) {
@@ -67,7 +67,24 @@ const renderCountry = function (data, className = "") {
 const getCountriesAndNeighbours = function (country) {
   fetch(`https://restcountries.com/v3.1/name/${country}`)
     .then(response => response.json())
-    .then(data => renderCountry(data[0]));
+    .then(data =>{renderCountry(data[0]);
+      const neighbours = data[0].borders[1];
+      console.log(neighbours);
+      
+      if (!neighbours) {
+        return
+      };
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbours}`) 
+    })
+    .then(response => response.json())
+    .then(data2 =>{
+      console.log(data2);
+      renderCountry(data2[0], "neighbour")
+      
+    }
+      
+      
+    );
 };
 
 getCountriesAndNeighbours('usa');
