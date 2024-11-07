@@ -7,6 +7,16 @@ const renderError =function (msg){
   countriesContainer.insertAdjacentText('beforeend', msg);
 }
 
+const getJson = function (url ,message = '') {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(message); 
+      }  
+      return response.json();
+    })
+}
+
 const renderCountry = function (data, className = "") {
   const html = `<article class="country ${className}">
   <img class="country__img" src="${data.flags.png}" />
@@ -69,42 +79,43 @@ const renderCountry = function (data, className = "") {
 // }
 
 const getCountriesAndNeighbours = function (country) {
-  fetch(`https://restcountries.com/v3.1/name/${country}`)
+ /* fetch(`https://restcountries.com/v3.1/name/${country}`)
     .then(response => {
       if (!response.ok) {
         throw new Error("Country Not found"); 
       }  
       return response.json();
-    })
+    })*/
+   getJson(`https://restcountries.com/v3.1/name/${country}` , 'Country not found')
     .then(data =>{renderCountry(data[0]);
-      // const neighbours = data[0].borders[1];
-      // console.log(neighbours);
-      const neighbours = '000';
-      if (!neighbours) {
-        return
-      };
-      return fetch(`https://restcountries.com/v3.1/alpha/${neighbours}`) 
+      const neighbours = data[0].borders[1];
+      console.log(neighbours);
+      
+      if (!neighbours || neighbours.length === 0) {
+        throw new Error('No neighbour found!');
+      }
+      // Let's take the first neighbour const neighbour = neighbours[0];
+      
+      return getJson(`https://restcountries.com/v3.1/alpha/${neighbours}` , 'Neighbour Country Not found')})
+    .then(data =>{renderCountry(data[0], "neighbour");
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Neighbour Country Not found"); 
-      }  
-      return response.json();
-    })
-    .then(data2 =>{
-      console.log(data2);
-      renderCountry(data2[0], "neighbour") 
+    /**
+     * .then(data2 =>{
+       console.log(data2);
+       renderCountry(data2[0], "neighbour") 
     }  
-    )
+    ) 
+    */
     .catch(err => {
-      // console.error(`${err} this is error created by Akshay Is it`);
+      console.error(`${err}`);
       renderError(`${err.message} this is error created by Akshay`)
     })
     .finally(()=> {
       countriesContainer.style.opacity = 1;
     })
-};
+    };
 
 btn.addEventListener('click', function () {
   getCountriesAndNeighbours('India');
+  getCountriesAndNeighbours('australia');
 });
