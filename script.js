@@ -3,10 +3,13 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
+<<<<<<< HEAD
 const renderError =function (msg){
   countriesContainer.insertAdjacentText('beforeend', msg);
 }
 
+=======
+>>>>>>> c228cdbec950b88ad3e0b2c82e29de27853c1ad0
 const renderCountry = function (data, className = "") {
   const html = `<article class="country ${className}">
   <img class="country__img" src="${data.flags.png}" />
@@ -70,6 +73,7 @@ const renderCountry = function (data, className = "") {
 
 const getCountriesAndNeighbours = function (country) {
   fetch(`https://restcountries.com/v3.1/name/${country}`)
+<<<<<<< HEAD
     .then(response => {
       if (!response.ok) {
         throw new Error("Country Not found"); 
@@ -80,11 +84,19 @@ const getCountriesAndNeighbours = function (country) {
       // const neighbours = data[0].borders[1];
       // console.log(neighbours);
       const neighbours = '000';
+=======
+    .then(response => response.json())
+    .then(data =>{renderCountry(data[0]);
+      const neighbours = data[0].borders[1];
+      console.log(neighbours);
+      
+>>>>>>> c228cdbec950b88ad3e0b2c82e29de27853c1ad0
       if (!neighbours) {
         return
       };
       return fetch(`https://restcountries.com/v3.1/alpha/${neighbours}`) 
     })
+<<<<<<< HEAD
     .then(response => {
       if (!response.ok) {
         throw new Error("Neighbour Country Not found"); 
@@ -108,3 +120,17 @@ const getCountriesAndNeighbours = function (country) {
 btn.addEventListener('click', function () {
   getCountriesAndNeighbours('India');
 });
+=======
+    .then(response => response.json())
+    .then(data2 =>{
+      console.log(data2);
+      renderCountry(data2[0], "neighbour")
+      
+    }
+      
+      
+    );
+};
+
+getCountriesAndNeighbours('usa');
+>>>>>>> c228cdbec950b88ad3e0b2c82e29de27853c1ad0
