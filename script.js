@@ -17,6 +17,30 @@ const getJson = function (url ,message = '') {
     })
 }
 
+const whereIAm = function (lang,long) {
+  // fetch(`https://geocode.xyz/${lang},${long}?geoit=json`)
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error("Country Not found");
+  //     }
+  //     return response.json();
+  //   })
+  //   .then(function (data) {
+  //     console.log(data);
+  //     console.log(`You are in ${data.city}, ${data.country}`);
+  //   }).catch(err => console.error(`${err}`))
+  return getJson(`https://geocode.xyz/${lang},${long}?geoit=json`,'location not found')
+  .then(function (data) {
+        console.log(data);
+        console.log(`You are in ${data.city}, ${data.country}`);
+        let countries = data.country;
+        console.log(countries);
+        
+        return countries;
+        
+  });
+}
+
 const renderCountry = function (data, className = "") {
   const html = `<article class="country ${className}">
   <img class="country__img" src="${data.flags.png}" />
@@ -95,7 +119,7 @@ const getCountriesAndNeighbours = function (country) {
         throw new Error('No neighbour found!');
       }
       // Let's take the first neighbour const neighbour = neighbours[0];
-      
+
       return getJson(`https://restcountries.com/v3.1/alpha/${neighbours}` , 'Neighbour Country Not found')})
     .then(data =>{renderCountry(data[0], "neighbour");
     })
@@ -116,6 +140,10 @@ const getCountriesAndNeighbours = function (country) {
     };
 
 btn.addEventListener('click', function () {
-  getCountriesAndNeighbours('India');
-  getCountriesAndNeighbours('australia');
+  getCountriesAndNeighbours();
+  // getCountriesAndNeighbours('australia');
+  
 });
+
+console.log(whereIAm(19.037, 72.873));
+
